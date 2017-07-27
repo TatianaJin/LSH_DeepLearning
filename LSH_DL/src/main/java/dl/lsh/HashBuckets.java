@@ -7,11 +7,11 @@ import java.util.*;
 public class HashBuckets
 {
     private double m_nn_sizeLimit;
-	private int m_L;
+    private int m_L;
     private int m_poolDim;
     private LSH m_hashFunction;
-	private List<HashMap<Integer, Set<Integer>>> m_Tables = new ArrayList<>();
-    private List<HashMap<Integer, int[]>> m_bucket_hashes = new ArrayList<>();
+	private List<HashMap<Integer, Set<Integer>>> m_Tables = new ArrayList<>();  // each set contains candidates with the hash value equals to key
+    private List<HashMap<Integer, int[]>> m_bucket_hashes = new ArrayList<>();  // seems no use
 
 	public HashBuckets(double sizeLimit, int poolDim, int L, LSH hashFunction)
     {
@@ -73,7 +73,7 @@ public class HashBuckets
         return histogramLSH(generateHashSignature(data));
     }
 
-    public Set<Integer> histogramLSH(int[] hashes)
+    public Set<Integer> histogramLSH(int[] hashes) // get (at most m_nn_sizeLimit) neighbors that are in the same hash buckets
     {
         assert(hashes.length == m_L);
 

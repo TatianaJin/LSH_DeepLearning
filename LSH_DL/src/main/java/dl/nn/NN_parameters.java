@@ -24,15 +24,15 @@ public class NN_parameters
     private int m_epoch_offset;
     private List<NeuronLayer> m_layers;
 
-    private int[] m_weight_idx;
-    private int[] m_bias_idx;
+    private int[] m_weight_idx;                 // the indices of first weights of all layers
+    private int[] m_bias_idx;                   // the indices of first bias of all layers
     private int m_size = 0;
     private int m_layer_count = 0;
     private int[] m_layer_row;
     private int[] m_layer_col;
 
     // Stochastic Gradient Descent
-    private double[] m_theta;
+    private double[] m_theta;                   // the actual weights for the whole neural network
     private double[] m_gradient;
 
     // Momentum
@@ -122,7 +122,7 @@ public class NN_parameters
             m_size += l.numWeights();
             m_bias_idx[m_layer_count] = m_size;
             m_size += l.numBias();
-            l.m_pos = m_layer_count++;
+            l.m_pos = m_layer_count++;                          // register position (layer index) of Neuronlayer
             l.m_theta = this;
         }
         m_theta = new double[m_size];
@@ -211,7 +211,7 @@ public class NN_parameters
                     m_theta[++global_idx] = l.weightInitialization();
                 }
             }
-            global_idx += l.m_layer_size;
+            global_idx += l.m_layer_size;  // count for bias
         }
         assert(global_idx == m_size-1);
     }
@@ -257,11 +257,11 @@ public class NN_parameters
 
     public void createLSHTable(List<HashBuckets> tables, int[] poolDim, int[] b, int[] L, final double[] size_limit)
     {
-        int global_idx = 0;
-        for(int layer_idx = 0; layer_idx < m_layer_count-1; ++layer_idx)
+        int global_idx = 0;  // idx for identifying weights associated with a neuron
+        for(int layer_idx = 0; layer_idx < m_layer_count-1; ++layer_idx)  // create hash buckets for each layer
         {
             HashBuckets table = new HashBuckets(size_limit[layer_idx] * m_layer_row[layer_idx], poolDim[layer_idx], L[layer_idx], new CosineDistance(b[layer_idx], L[layer_idx], m_layer_col[layer_idx] / poolDim[layer_idx]));
-            for(int idx = 0; idx < m_layer_row[layer_idx] ; ++idx)
+            for(int idx = 0; idx < m_layer_row[layer_idx] ; ++idx)  // hash each neuron into the hash buckets
             {
                 table.LSHAdd(idx, Util.vectorize(m_theta, global_idx, m_layer_col[layer_idx]));
                 global_idx += m_layer_col[layer_idx];
@@ -389,7 +389,7 @@ public class NN_parameters
     public void stochasticGradientDescent(int idx, double gradient)
     {
         m_gradient[idx] = gradient;
-        m_learning_rates[idx] += Math.pow(gradient, 2.0);
+        m_learning_rates[idx] += Math.pow(gradient, 2.0);  // second-order moments for adagrad
         double learning_rate = m_learning_rate / (1e-6 + Math.sqrt(m_learning_rates[idx]));
         m_momentum[idx] *= m_momentum_lambda;
         m_momentum[idx] += learning_rate * gradient;

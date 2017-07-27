@@ -3,7 +3,7 @@ package dl.lsh;
 import org.jblas.DoubleMatrix;
 import java.util.List;
 
-public class RandomProjection
+public class RandomProjection  // Random sign projection
 {
     private List<DoubleMatrix> m_projection_matrix;
     private DoubleMatrix m_query;

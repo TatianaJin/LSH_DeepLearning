@@ -8,8 +8,8 @@ public abstract class HiddenLayer extends NeuronLayer
 {
     protected Set<Integer> m_node_set;
     protected Set<Integer> m_total_node_set;
-    protected long m_total_nn_set_size;
-    protected long m_total_multiplication;
+    protected long m_total_nn_set_size;         // keep records of active nodes
+    protected long m_total_multiplication;      // keep records of multiplicative operations
 
     public HiddenLayer(int prev_layer_size, int layer_size, double L2)
     {

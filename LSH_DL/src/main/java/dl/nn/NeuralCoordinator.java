@@ -37,6 +37,8 @@ public class NeuralCoordinator
         m_params = params;
         m_networks = new ArrayList<>(Util.LAYER_THREADS);
         m_networks.add(new NeuralNetwork(params, layers, hiddenLayers, L2, cf));
+
+        // clone the whole neural network (Util.LAYER_THREADS-1) times for parallel execution
         for(int idx = 1; idx < Util.LAYER_THREADS; ++idx)
         {
             LinkedList<HiddenLayer> hiddenLayers1 = new LinkedList<>();
@@ -90,7 +92,7 @@ public class NeuralCoordinator
         System.out.println("Finished Pre-Computing Testing Hashes");
 
         List<Integer> data_idx = initIndices(labels.length);
-        final int m_examples_per_thread = data.size() / (Util.UPDATE_SIZE * Util.LAYER_THREADS);
+        final int m_examples_per_thread = data.size() / (Util.UPDATE_SIZE * Util.LAYER_THREADS);  // Util.UPDATE_SIZE updates per epoch
         assert(data_idx.size() == labels.length);
 
         BufferedWriter train_writer = new BufferedWriter(new FileWriter(m_train_path, true));
@@ -98,12 +100,13 @@ public class NeuralCoordinator
         for(int epoch_count = 0; epoch_count < max_epoch; ++epoch_count)
         {
             m_params.clear_gradient();
-            shuffle(data_idx);
+            shuffle(data_idx);          // for sampling? not really used... TODO
             int count = 0;
+            // main loop: data parallel FP and BP
             while(count < data_idx.size())
             {
                 List<Thread> threads = new LinkedList<>();
-                for(NeuralNetwork network : m_networks)
+                for(NeuralNetwork network : m_networks)  // allocate data batches in a round-robin manner to threads
                 {
                     if(count < data_idx.size())
                     {
@@ -127,7 +130,8 @@ public class NeuralCoordinator
                     }
                 }
                 Util.join(threads);
-                if(epoch_count <= update_threshold && epoch_count % (epoch_count / 10 + 1) == 0)
+                // in certain epochs, rebuild hash tables for each batch ??? TODO
+                if(epoch_count <= update_threshold && epoch_count % (epoch_count / 10 + 1) == 0)  // increasing hash table update interval every 10 epochs
                 {
                     m_params.rebuildTables();
                 }

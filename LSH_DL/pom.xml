@@ -8,6 +8,11 @@
     <artifactId>LSH_DL</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+	<properties>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+	</properties>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -45,4 +50,50 @@
             <version>3.5</version>
         </dependency>
     </dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.gmavenplus</groupId>
+				<artifactId>gmavenplus-plugin</artifactId>
+				<version>1.5</version>
+				<executions>
+                    <execution>
+                        <goals>
+                            <goal>addSources</goal>
+                            <goal>addTestSources</goal>
+                            <goal>generateStubs</goal>
+                            <goal>compile</goal>
+                            <goal>testGenerateStubs</goal>
+                            <goal>testCompile</goal>
+                            <goal>removeStubs</goal>
+                            <goal>removeTestStubs</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<fileset>
+                                    <directory>./src/test/java/org</directory>
+									<includes>
+                                        <include>**/*.groovy</include>
+									</includes>
+								</fileset>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.12.3</version>
+				<configuration>
+					<failIfNoTests>false</failIfNoTests>
+                    <testClassesDirectory>./target/classes</testClassesDirectory>
+					<includes>
+                        <include>**/LSH_DL_Experiments.*</include>
+					</includes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>

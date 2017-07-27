@@ -161,10 +161,10 @@ class LSH_DL_Experiments extends GroovyTestCase
     {
         assert(size_limits.length == learning_rates.length)
 
-        for(int size = min_layers; size <= max_layers; ++size)
+        for(int size = min_layers; size <= max_layers; ++size)  // each run trains with NN with <size> hidden layers
         {
             hiddenLayers = new int[size]
-            Arrays.fill(hiddenLayers, hidden_layer_size)
+            Arrays.fill(hiddenLayers, hidden_layer_size)  // each hidden layer has 1000 neurons
 
             int[] sum_pool = new int[size]
             Arrays.fill(sum_pool, hidden_pool_size)
@@ -185,7 +185,7 @@ class LSH_DL_Experiments extends GroovyTestCase
                 construct(inputLayer, outputLayer)
                 NN_parameters parameters
                 try
-                {
+                {  // load existing model
                     parameters = new NN_parameters(Util.readerBZ2(Util.DATAPATH + dataset + "/" + Util.MODEL + title), NN_layers, sum_pool, bits, tables, learning_rates[idx], sl)
                 }
                 catch (Exception ignore)
@@ -196,7 +196,7 @@ class LSH_DL_Experiments extends GroovyTestCase
                 long startTime = System.currentTimeMillis()
                 NN.train(max_epoch, training_data, training_labels, test_data, test_labels)
                 long estimatedTime = (System.currentTimeMillis() - startTime) / 1000
-                System.out.println(estimatedTime)
+                System.out.println("Training time: " + estimatedTime)
             }
         }
     }

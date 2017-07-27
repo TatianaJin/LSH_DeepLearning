@@ -12,7 +12,7 @@ public class CosineDistance implements LSH
     private List<DoubleMatrix> randomMatrix;
     private int[] hashes;
 
-    public CosineDistance(int b, int L, int d)
+    public CosineDistance(int b, int L, int d)  // b: number of bits (hash functions to concatenate), d: dimensionality
     {
         m_L = L;
         randomMatrix = new ArrayList<>();
@@ -74,7 +74,7 @@ public class CosineDistance implements LSH
         return 1 - (dp / (x_norm * y_norm));
     }
 
-    public static double hammingDistance(int[] x, int[] y, final int b)
+    public static double hammingDistance(int[] x, int[] y, final int b)  // number of differences of b bits (all int in x or y concatenate to b bits)
     {
         final int numIntegers = b / Util.INT_SIZE;
         int numBits = b % Util.INT_SIZE;
@@ -93,7 +93,7 @@ public class CosineDistance implements LSH
         return 1 - Math.cos((double) hammingDistance * Math.PI / (double) b);
     }
 
-    private static int count(int value)
+    private static int count(int value)  // count the number of one-bits in the value
     {
         int count = 0;
         for(int idx = 0; idx < Util.INT_SIZE; ++idx)

@@ -6,13 +6,13 @@ public abstract class NeuronLayer implements Cloneable
     public int m_pos = -1;
     public NN_parameters m_theta;
 
-    protected double[] m_input;
-    protected double[] m_weightedSum;
-    protected double[] m_delta;
+    protected double[] m_input;         // inputs (activations of the previous layer)
+    protected double[] m_weightedSum;   // activations
+    protected double[] m_delta;         // gradients
 
     protected int m_prev_layer_size;
     protected int m_layer_size;
-    protected double L2_Lambda;
+    protected double L2_Lambda;         // lamdba for l2 regularization
 
     public NeuronLayer(int prev_layer_size, int layer_size, double L2)
     {

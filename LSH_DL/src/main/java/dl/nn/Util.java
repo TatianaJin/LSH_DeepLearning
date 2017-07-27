@@ -9,7 +9,8 @@ import java.util.*;
 
 public class Util
 {
-    public static final String DATAPATH = "../data/";
+    /* ******************************** constants ******************************* */
+    public static final String DATAPATH = "data/";
     public static final String MODEL = "Models/";
     public static final String TRAIN = "Train/";
     public static final String TEST = "Test/";
